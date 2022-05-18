@@ -1,51 +1,66 @@
 ﻿
+using System.Linq;
+
 class FindNumbers
 {
     static void Main()
 
     {
+        string path = @"C:\Users\Richard\Downloads\input2.txt";
 
-        string path = @"C:\Users\Richard\Downloads\input.txt";
+        int forward = 0;
+        int depth = 0;
 
-        int count = 0;
-        int counter = 0;
+        int aim = 0;
+        int position = 0;
+
         var lines = File.ReadLines(path).ToArray();
-
         int[] array = new int[lines.Length];
 
 
         foreach (var line in lines)
         {
 
-            int numberA = Int32.Parse(line);
+            if (line.StartsWith("f"))
+            {
 
-            array[count++] = numberA;
+                int value = int.Parse(new String(line.Where(Char.IsDigit).ToArray()));
+
+                forward += value;
+
+                position += value * aim;
+ 
+            }
+
+            if (line.StartsWith("u"))
+            {
+                int value = int.Parse(new String(line.Where(Char.IsDigit).ToArray()));
+
+                depth -= value;
+
+                aim -= value;
+
+            }
+
+            if (line.StartsWith("d"))
+            {
+                int value = int.Parse(new String(line.Where(Char.IsDigit).ToArray()));
+
+                depth += value;
+
+                aim += value;
+            }
 
         }
 
-        /*
+        var total = forward * depth;
 
-        //Day1:1 solution
+        var total2 = forward * position;
 
-        for (int i = 1; i < lines.Length; i++)
-        {
-            if (array[i - 1] < array[i])
-                counter++;
-        }
+        Console.WriteLine("The part 1 total is " + total);   //Part 1
 
-        Console.WriteLine("The number of occurances with greater numbers are: " + counter);
+        Console.WriteLine("The part 2 total is " + total2);  //Part 2
 
-        */
-
-        //Day1:2 solution
-
-        for (int i = 3; i < lines.Length; i++)
-        {
-            if (  (array[i-3]+array[i-2]+array[i-1]) < (array[i-2]+array[i-1]+array[i]))
-                counter++;
-        }
-
-        Console.WriteLine("The number of occurances with greater sequence than last are " + counter);
 
     }
 
