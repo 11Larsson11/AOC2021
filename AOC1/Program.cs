@@ -1,4 +1,5 @@
 ﻿
+using NCalc;
 using System.Linq;
 
 class FindNumbers
@@ -6,66 +7,118 @@ class FindNumbers
     static void Main()
 
     {
-        string path = @"C:\Users\Richard\Downloads\input2.txt";
-
-        int forward = 0;
-        int depth = 0;
-
-        int aim = 0;
-        int position = 0;
+        string path = @"C:\Users\Richard\Downloads\input3.txt";
 
         var lines = File.ReadLines(path).ToArray();
-        int[] array = new int[lines.Length];
+        var linesList = File.ReadAllLines(path).ToList();
+        var numberOfLines = linesList[0].Length;
 
 
-        foreach (var line in lines)
+        var lineLength = 0;
+        var numLength = 0;
+
+        int[] gammaRate = new int[12];
+
+        var epsilonRates = "";
+        var gammaRates = "";
+
+
+
+        foreach (var line in lines)    
+
         {
 
-            if (line.StartsWith("f"))
+            for (int i = 0; i < line.Length; i++)
             {
 
-                int value = int.Parse(new String(line.Where(Char.IsDigit).ToArray()));
+                if (line[i] == '1')
 
-                forward += value;
-
-                position += value * aim;
- 
-            }
-
-            if (line.StartsWith("u"))
-            {
-                int value = int.Parse(new String(line.Where(Char.IsDigit).ToArray()));
-
-                depth -= value;
-
-                aim -= value;
+                {
+                    gammaRate[i] += 1;
+                }
 
             }
 
-            if (line.StartsWith("d"))
+            lineLength = line.Length;
+            numLength = lines.Length;
+        }
+
+        // Solution for part 1
+        
+
+        for (int i = 0; i < lineLength; i++)
+        {
+
+            if(gammaRate[i] > numLength/2)
             {
-                int value = int.Parse(new String(line.Where(Char.IsDigit).ToArray()));
+                epsilonRates += 0;
+                gammaRates += 1;
+            }
 
-                depth += value;
-
-                aim += value;
+            else
+            {
+                epsilonRates += 1;
+                gammaRates += 0;
             }
 
         }
 
-        var total = forward * depth;
 
-        var total2 = forward * position;
+        //Part 1 results
 
-        Console.WriteLine("The part 1 total is " + total);   //Part 1
+        
+            var result = Convert.ToInt32(gammaRates, 2) * Convert.ToInt32(epsilonRates, 2);
 
-        Console.WriteLine("The part 2 total is " + total2);  //Part 2
+            Console.WriteLine("Part 1 result is " + result);
+        
+
+
+        //Solution for part 2
+
+
+
+        var numbers = new List<string>(linesList);
+        var numbers2 = new List<string>(linesList);
+
+
+        //Oxygen loop
+        
+        for (var i = 0; i < numberOfLines; i++)
+        {
+            var ones = numbers.Count(s => s[i] == '1');
+
+            var mostCommon = ones >= numbers.Count / 2d ? '1' : '0';
+
+
+            numbers = numbers.Where(s => s[i] == mostCommon).ToList();
+
+            if (numbers.Count == 1) break;
+        }
+
+        //CO2 loop
+
+        for (var i = 0; i < linesList[0].Length; i++)
+        {
+            var ones = numbers2.Count(s => s[i] == '1');
+
+            var leastCommon = ones < numbers2.Count / 2d ? '1' : '0';
+
+            numbers2 = numbers2.Where(s => s[i] == leastCommon).ToList();
+
+            if (numbers2.Count == 1) break;
+        }
+
+
+        //Part 2 results
+
+        var oxygenValue = Convert.ToInt32(numbers.First(), 2);
+        var co2Value = Convert.ToInt32(numbers2.First(), 2);
+
+
+        var total2 = oxygenValue * co2Value;
+
+        Console.WriteLine("Part 2 result is " + total2);
 
 
     }
-
 }
-
-
-
-
